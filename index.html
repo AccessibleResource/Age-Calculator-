@@ -3,228 +3,222 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Age Calculator</title>
+    <title>AR Age Calculator</title>
     <style>
-        :root {
-            --primary: #2563eb;
-            --error: #dc2626;
-            --text: #1e293b;
-            --background: #f8fafc;
-            --container: #ffffff;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', sans-serif;
-        }
-
         body {
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(45deg, #0b132b, #1c2541, #3a506b, #5bc0be);
+            background-size: 400% 400%;
+            animation: gradientAnimation 15s ease infinite;
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
             min-height: 100vh;
-            display: grid;
-            place-items: center;
-            background: var(--background);
-            color: var(--text);
-            line-height: 1.5;
-            padding: 1rem;
+            margin: 0;
+            padding: 20px;
         }
 
-        .container {
-            background: var(--container);
-            padding: 2rem;
-            border-radius: 1.5rem;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        @keyframes gradientAnimation {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .calculator-container {
+            background: rgba(0, 0, 0, 0.6);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 15px 25px rgba(0,0,0,0.5);
+            text-align: center;
             width: 100%;
             max-width: 500px;
-            transition: transform 0.3s ease;
+            box-sizing: border-box;
         }
 
-        .title {
-            text-align: center;
-            margin-bottom: 2rem;
-            font-size: 2rem;
-            font-weight: 600;
+        header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
         }
 
-        .input-group {
+        .developer-credit {
+            font-size: 0.9rem;
+            margin-bottom: 20px;
+            opacity: 0.8;
+        }
+
+        .description {
+            font-size: 1.1rem;
+            margin-bottom: 30px;
+        }
+
+        .date-inputs {
             display: flex;
-            gap: 1rem;
-            margin-bottom: 1.5rem;
+            justify-content: space-between;
+            gap: 15px;
+            margin-bottom: 30px;
         }
 
-        .input-field {
+        .date-inputs > div {
             flex: 1;
-            position: relative;
         }
 
         label {
             display: block;
-            margin-bottom: 0.5rem;
-            font-weight: 500;
-            color: var(--text);
+            font-size: 1.2rem;
+            margin-bottom: 10px;
         }
 
-        input {
+        input[type="number"] {
+            padding: 15px;
+            border-radius: 10px;
+            border: 2px solid #5bc0be;
+            background: #1c2541;
+            color: #fff;
+            font-size: 1.1rem;
             width: 100%;
-            padding: 0.75rem;
-            border: 2px solid #e2e8f0;
-            border-radius: 0.75rem;
-            font-size: 1rem;
-            transition: border-color 0.3s ease;
+            box-sizing: border-box;
+            text-align: center;
         }
 
-        input:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        input[type="number"]::-webkit-inner-spin-button,
+        input[type="number"]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        input[type="number"] {
+            -moz-appearance: textfield; /* Firefox */
         }
 
         button {
-            width: 100%;
-            padding: 1rem;
-            background: var(--primary);
-            color: white;
+            background: #5bc0be;
+            color: #0b132b;
             border: none;
-            border-radius: 0.75rem;
-            font-size: 1rem;
-            font-weight: 600;
+            padding: 15px 30px;
+            font-size: 1.2rem;
+            border-radius: 10px;
             cursor: pointer;
-            transition: transform 0.2s ease, background 0.3s ease;
+            transition: background-color 0.3s, transform 0.2s;
+            width: 100%;
+            max-width: 300px;
         }
 
-        button:hover {
-            background: #1d4ed8;
+        button:hover, button:focus {
+            background-color: #6fffe9;
+            transform: scale(1.05);
         }
 
-        button:active {
-            transform: scale(0.98);
+        .result-section {
+            margin-top: 30px;
         }
 
-        .result {
-            margin-top: 1.5rem;
-            padding: 1.5rem;
-            border-radius: 0.75rem;
-            background: #f1f5f9;
-            text-align: center;
-            opacity: 0;
-            transform: translateY(-10px);
-            transition: opacity 0.3s ease, transform 0.3s ease;
-        }
-
-        .result.show {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        .result p {
-            font-size: 1.25rem;
-            margin: 0.5rem 0;
-        }
-
-        .error {
-            color: var(--error);
-            background: #fee2e2;
-            padding: 1rem;
-            border-radius: 0.75rem;
-            margin-top: 1rem;
-            display: none;
-        }
-
-        .error.show {
-            display: block;
-            animation: shake 0.4s ease;
-        }
-
-        @media (prefers-reduced-motion: reduce) {
-            * {
-                transition: none !important;
-                animation: none !important;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .input-group {
-                flex-direction: column;
-            }
-        }
-
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-5px); }
-            75% { transform: translateX(5px); }
+        #result {
+            font-size: 1.8rem;
+            font-weight: bold;
+            min-height: 50px;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1 class="title">Age Calculator</h1>
-        <div class="input-group">
-            <div class="input-field">
-                <label for="day">Day</label>
-                <input type="number" id="day" placeholder="DD" min="1" max="31" required>
+
+    <main class="calculator-container">
+        <header>
+            <h1>AR Age Calculator</h1>
+            <p class="developer-credit">Developed by SM Ripon and Sujon Roy — Powered by Accessible Resource</p>
+        </header>
+
+        <p class="description">
+            Calculate your exact age in years, months, and days — with instant voice feedback for accessibility.
+        </p>
+
+        <section class="input-section">
+            <div class="date-inputs">
+                <div>
+                    <label for="day">Day</label>
+                    <input type="number" id="day" placeholder="DD" aria-label="Day of Birth">
+                </div>
+                <div>
+                    <label for="month">Month</label>
+                    <input type="number" id="month" placeholder="MM" aria-label="Month of Birth">
+                </div>
+                <div>
+                    <label for="year">Year</label>
+                    <input type="number" id="year" placeholder="YYYY" aria-label="Year of Birth">
+                </div>
             </div>
-            <div class="input-field">
-                <label for="month">Month</label>
-                <input type="number" id="month" placeholder="MM" min="1" max="12" required>
-            </div>
-            <div class="input-field">
-                <label for="year">Year</label>
-                <input type="number" id="year" placeholder="YYYY" min="1900" required>
-            </div>
-        </div>
-        <button id="calculateBtn">Calculate Age</button>
-        <div class="error" id="errorMsg">Please enter a valid date</div>
-        <div class="result" id="result">
-            <p>Your age is:</p>
-            <p><span id="years">0</span> years</p>
-            <p><span id="months">0</span> months</p>
-            <p><span id="days">0</span> days</p>
-        </div>
-    </div>
+        </section>
+
+        <button id="calculateBtn" aria-label="Calculate Age">Calculate Age</button>
+
+        <section class="result-section">
+            <p id="result" aria-live="polite"></p>
+        </section>
+    </main>
 
     <script>
-        const calculateBtn = document.getElementById('calculateBtn');
-        const dayInput = document.getElementById('day');
-        const monthInput = document.getElementById('month');
-        const yearInput = document.getElementById('year');
-        const resultDiv = document.getElementById('result');
-        const errorDiv = document.getElementById('errorMsg');
+        document.getElementById('calculateBtn').addEventListener('click', calculateAge);
 
-        function isValidDate(day, month, year) {
-            const date = new Date(year, month - 1, day);
-            return (
-                date.getFullYear() === year &&
-                date.getMonth() === month - 1 &&
-                date.getDate() === day &&
-                date <= new Date()
-            );
+        function speak(text) {
+            // Cancel any previous speech to avoid overlap
+            speechSynthesis.cancel();
+            const utterance = new SpeechSynthesisUtterance(text);
+            speechSynthesis.speak(utterance);
         }
 
         function calculateAge() {
+            const dayInput = document.getElementById('day');
+            const monthInput = document.getElementById('month');
+            const yearInput = document.getElementById('year');
+            const resultDisplay = document.getElementById('result');
+            const errorMessage = "Please enter a valid birthdate.";
+
             const day = parseInt(dayInput.value);
             const month = parseInt(monthInput.value);
             const year = parseInt(yearInput.value);
 
-            errorDiv.classList.remove('show');
-            resultDiv.classList.remove('show');
+            // --- Validation ---
+            if (!day || !month || !year || isNaN(day) || isNaN(month) || isNaN(year)) {
+                resultDisplay.textContent = errorMessage;
+                speak(errorMessage);
+                return;
+            }
+            
+            // Check for valid month and year ranges
+            if (month < 1 || month > 12 || year < 1000 || year > new Date().getFullYear() + 100) {
+                 resultDisplay.textContent = errorMessage;
+                 speak(errorMessage);
+                 return;
+            }
 
-            if (!isValidDate(day, month, year)) {
-                errorDiv.classList.add('show');
+            // Check for valid day for the given month and year (handles leap years)
+            const daysInMonth = new Date(year, month, 0).getDate();
+            if (day < 1 || day > daysInMonth) {
+                resultDisplay.textContent = errorMessage;
+                speak(errorMessage);
                 return;
             }
 
-            const birthDate = new Date(year, month - 1, day);
+            const dob = new Date(year, month - 1, day);
             const today = new Date();
+            today.setHours(0, 0, 0, 0); // Set time to midnight for accurate comparison
 
-            let years = today.getFullYear() - birthDate.getFullYear();
-            let months = today.getMonth() - birthDate.getMonth();
-            let days = today.getDate() - birthDate.getDate();
+            // Check if the date is in the future
+            if (dob > today) {
+                resultDisplay.textContent = errorMessage;
+                speak(errorMessage);
+                return;
+            }
+
+            // --- Calculation ---
+            let years = today.getFullYear() - dob.getFullYear();
+            let months = today.getMonth() - dob.getMonth();
+            let days = today.getDate() - dob.getDate();
 
             if (days < 0) {
                 months--;
-                const lastMonth = new Date(today.getFullYear(), today.getMonth(), 0);
-                days += lastMonth.getDate();
+                // Borrow days from the previous month
+                days += new Date(today.getFullYear(), today.getMonth(), 0).getDate();
             }
 
             if (months < 0) {
@@ -232,21 +226,11 @@
                 months += 12;
             }
 
-            document.getElementById('years').textContent = years;
-            document.getElementById('months').textContent = months;
-            document.getElementById('days').textContent = days;
-
-            setTimeout(() => resultDiv.classList.add('show'), 10);
+            const resultText = `You are ${years} years, ${months} months, and ${days} days old.`;
+            resultDisplay.textContent = resultText;
+            speak(resultText);
         }
-
-        calculateBtn.addEventListener('click', calculateAge);
-
-        // Handle Enter key press
-        [dayInput, monthInput, yearInput].forEach(input => {
-            input.addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') calculateAge();
-            });
-        });
     </script>
+
 </body>
 </html>
