@@ -3,234 +3,381 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AR Age Calculator</title>
+    <title>AR Voice Age Calculator</title>
     <style>
         body {
-            font-family: 'Segoe UI', sans-serif;
-            background: linear-gradient(45deg, #0b132b, #1c2541, #3a506b, #5bc0be);
-            background-size: 400% 400%;
-            animation: gradientAnimation 15s ease infinite;
-            color: #fff;
+            font-family: Arial, sans-serif;
+            background-color: #f0f2f5;
+            margin: 0;
+            padding: 20px;
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            margin: 0;
-            padding: 20px;
-        }
-
-        @keyframes gradientAnimation {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-
-        .calculator-container {
-            background: rgba(0, 0, 0, 0.6);
-            padding: 40px;
-            border-radius: 20px;
-            box-shadow: 0 15px 25px rgba(0,0,0,0.5);
-            text-align: center;
-            width: 100%;
-            max-width: 500px;
-            box-sizing: border-box;
-        }
-
-        header h1 {
-            font-size: 2.5rem;
-            margin-bottom: 10px;
-        }
-
-        .developer-credit {
-            font-size: 0.9rem;
-            margin-bottom: 20px;
-            opacity: 0.8;
-        }
-
-        .description {
-            font-size: 1.1rem;
-            margin-bottom: 30px;
-        }
-
-        .date-inputs {
-            display: flex;
-            justify-content: space-between;
-            gap: 15px;
-            margin-bottom: 30px;
-        }
-
-        .date-inputs > div {
-            flex: 1;
-        }
-
-        label {
-            display: block;
-            font-size: 1.2rem;
-            margin-bottom: 10px;
-        }
-
-        input[type="number"] {
-            padding: 15px;
-            border-radius: 10px;
-            border: 2px solid #5bc0be;
-            background: #1c2541;
-            color: #fff;
-            font-size: 1.1rem;
-            width: 100%;
-            box-sizing: border-box;
             text-align: center;
         }
 
-        input[type="number"]::-webkit-inner-spin-button,
-        input[type="number"]::-webkit-outer-spin-button {
-            -webkit-appearance: none;
-            margin: 0;
-        }
-
-        input[type="number"] {
-            -moz-appearance: textfield; /* Firefox */
-        }
-
-        button {
-            background: #5bc0be;
-            color: #0b132b;
-            border: none;
-            padding: 15px 30px;
-            font-size: 1.2rem;
+        .container {
+            background-color: #ffffff;
+            padding: 30px;
             border-radius: 10px;
-            cursor: pointer;
-            transition: background-color 0.3s, transform 0.2s;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
             width: 100%;
-            max-width: 300px;
         }
 
-        button:hover, button:focus {
-            background-color: #6fffe9;
-            transform: scale(1.05);
-        }
-
-        .result-section {
-            margin-top: 30px;
-        }
-
-        #result {
-            font-size: 1.8rem;
+        .title {
+            font-size: 2.5em;
             font-weight: bold;
-            min-height: 50px;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .sub-description {
+            font-size: 1.1em;
+            color: #666;
+            margin-bottom: 20px;
+        }
+
+        .credit {
+            font-size: 0.9em;
+            color: #999;
+            margin-bottom: 20px;
+        }
+
+        .mode-selector {
+            margin-bottom: 30px;
+        }
+
+        .mode-selector select {
+            padding: 8px 12px;
+            font-size: 1em;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        #voice-mode-container {
+            margin-bottom: 20px;
+        }
+
+        .microphone-button {
+            background-color: #007bff;
+            border: none;
+            border-radius: 50%;
+            width: 80px;
+            height: 80px;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0 auto 10px;
+            transition: background-color 0.3s;
+        }
+
+        .microphone-button:hover {
+            background-color: #0056b3;
+        }
+
+        .microphone-button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+
+        .microphone-button svg {
+            width: 40px;
+            height: 40px;
+            fill: white;
+        }
+
+        #mic-label {
+            font-size: 1em;
+            color: #555;
+        }
+        
+        #text-mode-container {
+            display: none; /* Hidden by default */
+            gap: 10px;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        #text-mode-container input {
+            padding: 10px;
+            font-size: 1em;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            width: 80px;
+            text-align: center;
+        }
+
+        #calculate-button {
+            padding: 10px 20px;
+            font-size: 1em;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        #calculate-button:hover {
+            background-color: #218838;
+        }
+
+        .result-container, .error-container, #compatibility-message {
+            font-size: 1.2em;
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 5px;
+            display: none; /* Hidden by default */
+        }
+
+        .result-container {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+            font-weight: bold;
+        }
+
+        .error-container, #compatibility-message {
+            background-color: #ffebee;
+            color: #c62828;
         }
     </style>
 </head>
 <body>
+    <div class="container">
+        <h1 class="title">AR Voice Age Calculator</h1>
+        <p class="sub-description">Calculate your age by speaking your birth year, month, and day. Get instant voice feedback.</p>
+        <p class="credit">Developed by S M Ripon & Ajay Thakur | Powered by Accessible Resource</p>
 
-    <main class="calculator-container">
-        <header>
-            <h1>AR Age Calculator</h1>
-            <p class="developer-credit">Developed by SM Ripon and Sujon Roy — Powered by Accessible Resource</p>
-        </header>
+        <div class="mode-selector">
+            <label for="mode-switch">Select Mode: </label>
+            <select id="mode-switch">
+                <option value="voice" selected>Voice Mode</option>
+                <option value="text">Text Mode</option>
+            </select>
+        </div>
 
-        <p class="description">
-            Calculate your exact age in years, months, and days — with instant voice feedback for accessibility.
-        </p>
+        <!-- Voice Mode -->
+        <div id="voice-mode-container">
+            <button id="microphone-button" class="microphone-button" aria-label="Start voice recognition">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                    <path d="M12 14c1.66 0 2.99-1.34 2.99-3L15 5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.3-3c0 3-2.54 5.1-5.3 5.1S6.7 14 6.7 11H5c0 3.41 2.72 6.23 6 6.72V21h2v-3.28c3.28-.49 6-3.31 6-6.72h-1.7z"/>
+                </svg>
+            </button>
+            <p id="mic-label">Tap the microphone and say your birth date.</p>
+        </div>
 
-        <section class="input-section">
-            <div class="date-inputs">
-                <div>
-                    <label for="day">Day</label>
-                    <input type="number" id="day" placeholder="DD" aria-label="Day of Birth">
-                </div>
-                <div>
-                    <label for="month">Month</label>
-                    <input type="number" id="month" placeholder="MM" aria-label="Month of Birth">
-                </div>
-                <div>
-                    <label for="year">Year</label>
-                    <input type="number" id="year" placeholder="YYYY" aria-label="Year of Birth">
-                </div>
-            </div>
-        </section>
+        <!-- Text Mode -->
+        <div id="text-mode-container">
+            <input type="number" id="day-input" placeholder="Day" min="1" max="31">
+            <input type="number" id="month-input" placeholder="Month" min="1" max="12">
+            <input type="number" id="year-input" placeholder="Year" min="1900">
+            <button id="calculate-button">Calculate</button>
+        </div>
 
-        <button id="calculateBtn" aria-label="Calculate Age">Calculate Age</button>
-
-        <section class="result-section">
-            <p id="result" aria-live="polite"></p>
-        </section>
-    </main>
+        <div id="result-container" class="result-container"></div>
+        <div id="error-container" class="error-container"></div>
+        <div id="compatibility-message" class="error-container"></div>
+    </div>
+    
+    <audio id="welcome-audio" src="smr/smr.mp3" preload="auto"></audio>
 
     <script>
-        document.getElementById('calculateBtn').addEventListener('click', calculateAge);
+        document.addEventListener('DOMContentLoaded', () => {
+            // DOM Elements
+            const modeSwitch = document.getElementById('mode-switch');
+            const voiceModeContainer = document.getElementById('voice-mode-container');
+            const textModeContainer = document.getElementById('text-mode-container');
+            const microphoneButton = document.getElementById('microphone-button');
+            const micLabel = document.getElementById('mic-label');
+            const calculateButton = document.getElementById('calculate-button');
+            const dayInput = document.getElementById('day-input');
+            const monthInput = document.getElementById('month-input');
+            const yearInput = document.getElementById('year-input');
+            const resultContainer = document.getElementById('result-container');
+            const errorContainer = document.getElementById('error-container');
+            const compatibilityMessage = document.getElementById('compatibility-message');
+            const welcomeAudio = document.getElementById('welcome-audio');
 
-        function speak(text) {
-            // Cancel any previous speech to avoid overlap
-            speechSynthesis.cancel();
-            const utterance = new SpeechSynthesisUtterance(text);
-            speechSynthesis.speak(utterance);
-        }
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            let recognition;
+            let welcomeSequenceHasRun = false;
 
-        function calculateAge() {
-            const dayInput = document.getElementById('day');
-            const monthInput = document.getElementById('month');
-            const yearInput = document.getElementById('year');
-            const resultDisplay = document.getElementById('result');
-            const errorMessage = "Please enter a valid birthdate.";
+            // --- Welcome Message Logic ---
+            function triggerWelcomeSequence() {
+                if (welcomeSequenceHasRun) {
+                    return; // Ensure it only runs once
+                }
+                welcomeSequenceHasRun = true;
 
-            const day = parseInt(dayInput.value);
-            const month = parseInt(monthInput.value);
-            const year = parseInt(yearInput.value);
+                const welcomeSpeechText = "Welcome to AR Voice Age Calculator. Please speak your birth date clearly when you are ready.";
+                
+                // Play audio file
+                if (welcomeAudio) {
+                    welcomeAudio.play().catch(error => console.warn("Audio autoplay was prevented.", error));
+                }
+                
+                // Speak welcome message
+                const utterance = new SpeechSynthesisUtterance(welcomeSpeechText);
+                utterance.onerror = (event) => console.error('SpeechSynthesisUtterance error:', event);
+                speechSynthesis.speak(utterance);
+            }
 
-            // --- Validation ---
-            if (!day || !month || !year || isNaN(day) || isNaN(month) || isNaN(year)) {
-                resultDisplay.textContent = errorMessage;
-                speak(errorMessage);
-                return;
+            // Attempt 1: Try to trigger when TTS voices are loaded.
+            if (speechSynthesis.getVoices().length) {
+                triggerWelcomeSequence();
+            } else {
+                speechSynthesis.onvoiceschanged = triggerWelcomeSequence;
+            }
+
+            // Attempt 2 (Reliable Fallback): Trigger on the first user interaction.
+            document.body.addEventListener('click', triggerWelcomeSequence, { once: true });
+            document.body.addEventListener('touchstart', triggerWelcomeSequence, { once: true });
+
+            // --- Mode Switching ---
+            modeSwitch.addEventListener('change', (e) => {
+                clearMessages();
+                if (e.target.value === 'voice') {
+                    voiceModeContainer.style.display = 'block';
+                    textModeContainer.style.display = 'none';
+                } else {
+                    voiceModeContainer.style.display = 'none';
+                    textModeContainer.style.display = 'flex';
+                }
+            });
+
+            // --- Voice Recognition Logic ---
+            if (SpeechRecognition) {
+                recognition = new SpeechRecognition();
+                recognition.continuous = false;
+                recognition.lang = 'en-US';
+                recognition.interimResults = false;
+                recognition.maxAlternatives = 1;
+
+                microphoneButton.addEventListener('click', () => {
+                    if (microphoneButton.disabled) return;
+                    clearMessages();
+                    try {
+                        recognition.start();
+                    } catch (e) {
+                        micLabel.textContent = "Tap the microphone and say your birth date.";
+                    }
+                });
+
+                recognition.onstart = () => { microphoneButton.disabled = true; micLabel.textContent = "Listening..."; };
+                recognition.onend = () => { microphoneButton.disabled = false; micLabel.textContent = "Tap the microphone and say your birth date."; };
+                recognition.onresult = (event) => parseDateFromSpeech(event.results[0][0].transcript);
+                recognition.onerror = (event) => {
+                    let msg = "Sorry, I didn’t catch that. Please say your birth date clearly.";
+                    if (event.error === 'no-speech') msg = "I didn't hear anything. Please try again.";
+                    if (event.error === 'not-allowed') msg = "Microphone access was denied. Please allow it.";
+                    displayAndSpeakError(msg);
+                };
+            } else {
+                compatibilityMessage.textContent = "Sorry, your browser does not support voice input. Please use the Text Mode.";
+                compatibilityMessage.style.display = 'block';
+                voiceModeContainer.style.display = 'none';
+                modeSwitch.value = 'text';
+                textModeContainer.style.display = 'flex';
             }
             
-            // Check for valid month and year ranges
-            if (month < 1 || month > 12 || year < 1000 || year > new Date().getFullYear() + 100) {
-                 resultDisplay.textContent = errorMessage;
-                 speak(errorMessage);
-                 return;
+            // --- Text Input Logic ---
+            calculateButton.addEventListener('click', () => {
+                clearMessages();
+                const day = parseInt(dayInput.value, 10);
+                const month = parseInt(monthInput.value, 10);
+                const year = parseInt(yearInput.value, 10);
+
+                if (!day || !month || !year) {
+                    displayAndSpeakError("Please fill in all fields: Day, Month, and Year.");
+                    return;
+                }
+
+                const birthDate = new Date(year, month - 1, day);
+                if (birthDate.getFullYear() !== year || birthDate.getMonth() !== month - 1 || birthDate.getDate() !== day) {
+                    displayAndSpeakError("The date you provided is invalid. Please try again.");
+                    return;
+                }
+                
+                if (birthDate > new Date()) {
+                    displayAndSpeakError("The birth date cannot be in the future. Please try again.");
+                    return;
+                }
+                calculateAge(birthDate);
+            });
+
+            // --- Core Functions ---
+            function parseDateFromSpeech(dateString) {
+                const cleanedString = dateString.toLowerCase().replace(/(\d+)(st|nd|rd|th)/, "$1");
+                const date = new Date(cleanedString);
+
+                if (isNaN(date.getTime()) || date > new Date()) {
+                    displayAndSpeakError("The date you provided is invalid. Please say the month, day, and year clearly.");
+                    return;
+                }
+                calculateAge(date);
             }
 
-            // Check for valid day for the given month and year (handles leap years)
-            const daysInMonth = new Date(year, month, 0).getDate();
-            if (day < 1 || day > daysInMonth) {
-                resultDisplay.textContent = errorMessage;
-                speak(errorMessage);
-                return;
+            function calculateAge(birthDate) {
+                let today = new Date();
+                
+                let years = today.getFullYear() - birthDate.getFullYear();
+                let months = today.getMonth() - birthDate.getMonth();
+                let days = today.getDate() - birthDate.getDate();
+
+                if (days < 0) {
+                    months--;
+                    days += new Date(today.getFullYear(), today.getMonth(), 0).getDate();
+                }
+
+                if (months < 0) {
+                    years--;
+                    months += 12;
+                }
+                
+                if (years < 0) {
+                     displayAndSpeakError("That doesn't seem like a valid birth date. Please try again.");
+                     return;
+                }
+                displayAndSpeakAge(years, months, days);
             }
 
-            const dob = new Date(year, month - 1, day);
-            const today = new Date();
-            today.setHours(0, 0, 0, 0); // Set time to midnight for accurate comparison
-
-            // Check if the date is in the future
-            if (dob > today) {
-                resultDisplay.textContent = errorMessage;
-                speak(errorMessage);
-                return;
+            function displayAndSpeakAge(years, months, days) {
+                const yearText = years === 1 ? 'year' : 'years';
+                const monthText = months === 1 ? 'month' : 'months';
+                const dayText = days === 1 ? 'day' : 'days';
+                
+                const ageString = `You are ${years} ${yearText}, ${months} ${monthText}, and ${days} ${dayText} old.`;
+                
+                resultContainer.textContent = ageString;
+                resultContainer.style.display = 'block';
+                errorContainer.style.display = 'none';
+                speak(ageString);
             }
 
-            // --- Calculation ---
-            let years = today.getFullYear() - dob.getFullYear();
-            let months = today.getMonth() - dob.getMonth();
-            let days = today.getDate() - dob.getDate();
-
-            if (days < 0) {
-                months--;
-                // Borrow days from the previous month
-                days += new Date(today.getFullYear(), today.getMonth(), 0).getDate();
+            function displayAndSpeakError(message) {
+                errorContainer.textContent = message;
+                errorContainer.style.display = 'block';
+                resultContainer.style.display = 'none';
+                speak(message);
+            }
+            
+            function clearMessages() {
+                 speechSynthesis.cancel();
+                 resultContainer.style.display = 'none';
+                 errorContainer.style.display = 'none';
             }
 
-            if (months < 0) {
-                years--;
-                months += 12;
+            function speak(text) {
+                speechSynthesis.cancel();
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.onerror = (event) => console.error('SpeechSynthesisUtterance error:', event);
+                speechSynthesis.speak(utterance);
             }
-
-            const resultText = `You are ${years} years, ${months} months, and ${days} days old.`;
-            resultDisplay.textContent = resultText;
-            speak(resultText);
-        }
+        });
     </script>
-
 </body>
 </html>
